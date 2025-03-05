@@ -1,4 +1,0 @@
-// src/expense_category
-
-
-

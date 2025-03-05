@@ -1,13 +1,19 @@
 use std::{io, num::ParseIntError, process};
+use chrono::{NaiveDate, format::ParseError};
 
+use crate::ledger;
 
 pub fn welcome_message() {
 
     println!("\nWelcome to the finance tracker. You're going to be finacially smart!");
     println!("Please choose something from the options below.");
+    
 }
 
-pub fn display_options() {
+
+
+
+pub fn display_menu_options() {
     println!("\nOptions are below");
     println!("1. Add a new transaction");
     println!("2. View transactions and summary within a date range");
@@ -15,20 +21,40 @@ pub fn display_options() {
     println!("Enter your choice(1-3):")
 }
 
-pub fn check_user_input(user_choice: &String) -> Result<u32,ParseIntError> {
+pub fn check_user_option_input(user_choice: &String) -> Result<u32,ParseIntError> {
 
     let num_choice: Result<u32, ParseIntError> = user_choice.trim().parse();
 
     return num_choice
 }
 
+pub fn check_user_date_input(user_choice: &String) -> Result<NaiveDate,ParseError> {
+    let date = NaiveDate::parse_from_str(user_choice, "%Y-%m-%d");
+    return date
+}
 
-pub fn get_user_selection() -> u32 {
+pub fn get_user_transaction() {
+
+    println!("Enter the date of the transaction (yy-mm-dd) or hit 'enter' for today's date: ");
+    let user_choice: String = String::new();
+
+    io::stdin()
+    .read_line(&mut user_choice)
+    .expect("Failed to read the input!");
+
+    match check_user_date_input(&user_choice) {
+        Ok(date) => 
+    }
+   
+
+}
+
+pub fn get_user_menu_selection() -> u32 {
 
     let mut user_choice: String = String::new();
     
     loop {
-        display_options();
+        display_menu_options();
 
         user_choice.clear(); // Clear previous input before reading again
     
@@ -36,7 +62,7 @@ pub fn get_user_selection() -> u32 {
             .read_line(&mut user_choice)
             .expect("Failed to read the input!");
     
-        match check_user_input(&user_choice) {
+        match check_user_option_input(&user_choice) {
             Ok(selection) if selection == 1 || selection == 2 || selection == 3 => {
     
                 return selection;
@@ -50,7 +76,7 @@ pub fn get_user_selection() -> u32 {
 }
 
 
-pub fn exit_tracker() {
+pub fn exit_program() {
     process::exit(0);
 }
     
