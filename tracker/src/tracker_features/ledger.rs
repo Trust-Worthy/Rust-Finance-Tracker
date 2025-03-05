@@ -108,8 +108,20 @@ impl Ledger {
         self.transactions.push(transaction);
     }
 
-    fn get_total_spent(&self) -> f64 {
-        self.transactions.iter().map(|t:&Transaction|t.amount).sum()
+    fn get_total_expenses(&self) -> f64 {
+        self.transactions
+        .iter()
+        .filter(|t| matches!(t._type, TransactionType::Expense(_, _)))
+        .map(|t:&Transaction|t.amount)
+        .sum() // sum the values
+    }
+
+    fn get_total_income(&self) -> f64 {
+        self.transactions
+        .iter()
+        .filter(|t| matches!(t._type, TransactionType::Income(_, _)))
+        .map(|t:&Transaction|t.amount)
+        .sum() // sum the values
     }
 
     fn show_all_transactions(&self, start_date: Option<NaiveDate>, end_date: Option<NaiveDate>) {
@@ -145,8 +157,14 @@ impl Ledger {
             }
         }
 
-
     } 
 
+
+    fn show_summary() {
+
+        let mut income = i32;
+        let 
+        
+    }
 
 }
