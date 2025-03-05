@@ -134,7 +134,7 @@ impl Ledger {
         self.transactions
         .iter()
         .filter(|t| matches!(t._type, Some(TransactionType::Expense(_, _))))
-        .map(|t:&Transaction|t.amount)
+        .map(|t:&Transaction|t.amount.unwrap_or(0.0))
         .sum() // sum the values
     }
 
@@ -142,7 +142,7 @@ impl Ledger {
         self.transactions
         .iter()
         .filter(|t| matches!(t._type, Some(TransactionType::Income(_, _))))
-        .map(|t:&Transaction|t.amount)
+        .map(|t:&Transaction|t.amount.unwrap_or(0.0))
         .sum() // sum the values
     }
 
