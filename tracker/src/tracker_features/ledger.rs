@@ -160,10 +160,22 @@ impl Ledger {
     } 
 
 
-    fn show_summary() {
+    fn show_summary(&self,start_date: Option<NaiveDate>,end_date: Option<NaiveDate>) {
 
-        let mut income = i32;
-        let 
+        let income: f64;
+        let expense: f64;
+    
+
+        income = self.get_total_income();
+        expense = self.get_total_income();
+        let savings:f64 = income - expense;
+
+        self.show_all_transactions(start_date, end_date);
+        println!("\n");
+        println!("Summary:");
+        println!("Total Income: ${income}");
+        println!("Total Expenses: ${expense}");
+        println!("Net savings: ${savings}");
         
     }
 
