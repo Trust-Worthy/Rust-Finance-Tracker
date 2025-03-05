@@ -53,8 +53,8 @@ impl fmt::Display for IncomeCategory {
 
 #[derive(Debug)]
 pub enum TransactionType {
-    Income(IncomeCategory, f64),
-    Expense(ExpenseCategory, f64)
+    Income(Option<IncomeCategory>, Option<f64>),
+    Expense(Option<ExpenseCategory>, Option<f64>)
 
 }
 

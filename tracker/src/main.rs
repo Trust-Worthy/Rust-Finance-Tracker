@@ -3,10 +3,10 @@
 //! Learning by doing is the best type of learning in my book!
 
 mod user;
-use user::user_options::{welcome_message,get_user_menu_selection,exit_program,get_user_transaction};
+use user::user_options::{welcome_message,get_user_menu_selection,exit_program,get_user_transactions};
 
 mod tracker_features;
-use tracker_features::ledger::Ledger;
+use tracker_features::ledger::{Ledger, Transaction};
 
 
 
@@ -25,8 +25,12 @@ fn main() {
     
         match user_selection {
             3 => exit_program(),    
-            2 => get_user_transaction(),
-            1 => 
+            2 => 
+            1 => {
+                let user_transaction:Transaction = get_user_transactions();
+                user_ledger.add_transaction(user_transaction);
+                println!("Entry Added successfully");
+            }
         }
     }
 

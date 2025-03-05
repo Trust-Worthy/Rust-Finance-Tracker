@@ -41,10 +41,12 @@ pub fn get_user_transactions() -> Transaction{
     let mut transaction_type: String = String::new();
     let mut transaction_category: String = String::new();
     let mut transaction_description: String = String::new();
-    let mut user_options: Transaction {
-        date,
-        amount
-    }
+    let mut user_options: Transaction = Transaction {
+        date: None,
+        amount: None,
+        _type: None,
+        description:None
+    };  
 
     'get_all_details: loop {
         
@@ -66,7 +68,7 @@ pub fn get_user_transactions() -> Transaction{
             match check_user_date_input(&transaction_date) {
                 
                 Ok(date) => {
-                    user_options.date = date;
+                    user_options.date = Some(date);
                     break 'date;
                 }
                 Err(_e) => println!("Failed to parse date: {}",_e),
@@ -92,7 +94,7 @@ pub fn get_user_transactions() -> Transaction{
 
             match transaction_amount {
                 Ok(value) => {
-                    user_options.amount = value;
+                    user_options.amount = Some(value);
                     break 'amount;
                 }
                 Err(e) => println!("Failed to parse {}. Try again!",e),
@@ -136,7 +138,7 @@ pub fn get_user_transactions() -> Transaction{
                         _ => category = IncomeCategory::OTHER
 
                     }
-                    user_options._type = TransactionType::Income(category, user_options.amount);
+                    user_options._type = Some(TransactionType::Income(Some(category), user_options.amount));
                     break 'transaction_type;
                 }
                 "Expense" => {
@@ -149,7 +151,7 @@ pub fn get_user_transactions() -> Transaction{
                         "Giving" => category = ExpenseCategory::Giving,
                         _ => category = ExpenseCategory::Other
                     }
-                    user_options._type = TransactionType::Expense(category, user_options.amount);
+                    user_options._type = Some(TransactionType::Expense(Some(category), user_options.amount));
                     break 'transaction_type;
                 }
                 _ => println!("Please enter in a correct type")
@@ -167,10 +169,11 @@ pub fn get_user_transactions() -> Transaction{
                 break 'get_all_details;
             }
 
-            user_options.description = transaction_description;
+            user_options.description = Some(transaction_description);
             break 'get_all_details;
     };
 
+    
     return user_options
    
 
