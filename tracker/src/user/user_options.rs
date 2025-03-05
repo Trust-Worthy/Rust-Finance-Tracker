@@ -41,7 +41,10 @@ pub fn get_user_transactions() -> Transaction{
     let mut transaction_type: String = String::new();
     let mut transaction_category: String = String::new();
     let mut transaction_description: String = String::new();
-    let mut user_options: Transaction;
+    let mut user_options: Transaction {
+        date,
+        amount
+    }
 
     'get_all_details: loop {
         

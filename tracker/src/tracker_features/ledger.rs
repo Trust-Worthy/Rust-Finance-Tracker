@@ -69,10 +69,10 @@ impl fmt::Display for TransactionType {
 
 #[derive(Debug)]
 pub struct Transaction {
-    pub date: NaiveDate,
-    pub amount: f64,
-    pub _type: TransactionType,
-    pub description: String,
+    pub date: Option<NaiveDate>,
+    pub amount: Option<f64>,
+    pub _type: Option<TransactionType>,
+    pub description: Option<String>,
 
 }
 
