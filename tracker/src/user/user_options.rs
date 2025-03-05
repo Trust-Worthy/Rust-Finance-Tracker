@@ -1,4 +1,4 @@
-use std::{io, num::ParseIntError};
+use std::{io, num::ParseIntError, process};
 
 
 pub fn welcome_message() {
@@ -12,6 +12,7 @@ pub fn display_options() {
     println!("1. Add a new transaction");
     println!("2. View transactions and summary within a date range");
     println!("3. Exit");
+    println!("Enter your choice(1-3):")
 }
 
 pub fn check_user_input(user_choice: &String) -> Result<u32,ParseIntError> {
@@ -46,6 +47,11 @@ pub fn get_user_selection() -> u32 {
         }
     }
 
+}
+
+
+pub fn exit_tracker() {
+    process::exit(0);
 }
     
 
