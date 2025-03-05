@@ -61,8 +61,8 @@ pub enum TransactionType {
 impl fmt::Display for TransactionType {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match *self {
-            TransactionType::Income(ref category,amount ) => write!(f,"Income: {} ${}",category,amount),
-            TransactionType::Expense(ref category, amount) => write!(f,"Expense: {} ${}",category,amount)
+            TransactionType::Income(ref category,amount ) => write!(f,"Income: {:?} ${:?}",category,amount),
+            TransactionType::Expense(ref category, amount) => write!(f,"Expense: {:?} ${:?}",category,amount)
         }
     }
 }
@@ -79,12 +79,34 @@ pub struct Transaction {
 impl fmt::Display for Transaction {
     
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        
+        let date_str = match &self.date {
+            Some(date) => date.to_string(),
+            None => "N/A".to_string(), // Default for None
+        };
+
+        let amount_str = match &self.amount {
+            Some(amount) => format!("{:.2}", amount),
+            None => "N/A".to_string(), // Default for None
+        };
+
+        let type_str = match &self._type {
+            Some(TransactionType::Income(_,_)) => "Income".to_string(),
+            Some(TransactionType::Expense(_,_)) => "Expense".to_string(),
+            None => "N/A".to_string(), // Default for None
+        };
+
+        let description_str = match &self.description {
+            Some(description) => description.clone(),
+            None => "No description".to_string(), // Default for None
+        };
+
         write!(
             f,
-            "{:<10} {:>8.2}   {:<10}   {}", // aligns all the data
-            self.date, self.amount,self._type, self.description
+            "{:<10} {:>8}   {:<10}   {}", // aligns all the data
+            date_str, amount_str, type_str, description_str
         )
+        
+       
     }
 }
 
@@ -111,7 +133,7 @@ impl Ledger {
     pub fn get_total_expenses(&self) -> f64 {
         self.transactions
         .iter()
-        .filter(|t| matches!(t._type, TransactionType::Expense(_, _)))
+        .filter(|t| matches!(t._type, Some(TransactionType::Expense(_, _))))
         .map(|t:&Transaction|t.amount)
         .sum() // sum the values
     }
@@ -119,7 +141,7 @@ impl Ledger {
     pub fn get_total_income(&self) -> f64 {
         self.transactions
         .iter()
-        .filter(|t| matches!(t._type, TransactionType::Income(_, _)))
+        .filter(|t| matches!(t._type, Some(TransactionType::Income(_, _))))
         .map(|t:&Transaction|t.amount)
         .sum() // sum the values
     }
@@ -135,27 +157,33 @@ impl Ledger {
         println!("{:<15} {:<10} {:<15} {:<50}", "Date", "Amount", "Category", "Description");
         println!("---------------------------------------------------------------");
         for transaction in &self.transactions {
-            if transaction.date >= start_date && transaction.date <= end_date {
-                // Get the category as a string representation
-                let category = match &transaction._type {
-                    TransactionType::Income(ref category,_) => category.to_string(),
-                    TransactionType::Expense(ref category,_) => category.to_string(),
-                };
-                
-
-                let amount = match &transaction._type {
-                    TransactionType::Income(_,amount) => format!("{:2}",amount),
-                    TransactionType::Expense(_,amount) => format!("{:2}",amount),
-                };
-
-                println!("{:<15} {:<10} {:<15} {:<50}", 
-                transaction.date, 
-                amount, 
-                category, 
-                transaction.description);
-
+            // Check if the transaction date is within the start and end date
+            if let Some(date) = transaction.date {
+                if date >= start_date && date <= end_date {
+                    
+                    // Get the category as a string representation
+                    let Some(category) = match &transaction._type {
+                        Some(TransactionType::Income(ref category, _)) => category,
+                        Some(TransactionType::Expense(ref category, _)) => category,
+                        _ =>
+                    };
+        
+                    // Format the amount
+                    let Some(amount) = match &transaction._type {
+                        TransactionType::Income(_, amount) => format!("{:.2}", amount),
+                        TransactionType::Expense(_, amount) => format!("{:.2}", amount),
+                    };
+        
+                    // Print the transaction details
+                    println!("{:<15} {:<10} {:<15} {:<50}",
+                        date, // Using `date` directly after unwrap
+                        amount,
+                        category,
+                        transaction.description.as_ref().unwrap_or(&"No description".to_string())); // Handle None for description
+                }
             }
         }
+        
 
     } 
 
