@@ -2,10 +2,3 @@
 
 
 
-pub enum ExpenseCategory {
-    Food,
-    Transportation,
-    Entertainment,
-    Rent,
-    Other,
-}

@@ -4,7 +4,8 @@ use chrono::NaiveDate;
 
 pub fn get_user_summary_options() {
 
-    println!("Enter the date of the transaction (dd-mm-yyyy) or hit 'enter' for today's date:")
+    println!("Enter the date of the transaction (dd-mm-yyyy) or hit 'enter' for today's date:");
+    let mut
 }
 
 
