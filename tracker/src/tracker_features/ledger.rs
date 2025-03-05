@@ -1,5 +1,5 @@
 use chrono::NaiveDate;
-
+use std::fmt;
 
 
 
@@ -22,6 +22,18 @@ struct Transaction {
     category: ExpenseCategory,
     description: String,
 
+}
+
+impl fmt::Display for Transaction {
+    
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        
+        write!(
+            f,
+            "{:<10} {:>8.2}   {:<10}   {}", // aligns all the data
+            
+        )
+    }
 }
 
 #[derive(Debug)]
