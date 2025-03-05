@@ -1,7 +1,7 @@
 use std::{io, num::ParseIntError, process};
 use chrono::{format::ParseError, Local, NaiveDate};
 
-use crate::{tracker_features::ledger::{IncomeCategory, Transaction, TransactionType}, user::user_options};
+use crate::{tracker_features::ledger::{ExpenseCategory, IncomeCategory, Transaction, TransactionType}, user::user_options};
 
 pub fn welcome_message() {
 
@@ -34,20 +34,21 @@ pub fn check_user_date_input(user_choice: &String) -> Result<NaiveDate,ParseErro
     return date
 }
 
-pub fn get_user_transaction() -> NaiveDate{
+pub fn get_user_transactions() -> Transaction{
 
     let mut transaction_date: String = String::new();
     let mut transaction_amount: Result<f64,_>;
     let mut transaction_type: String = String::new();
     let mut transaction_category: String = String::new();
+    let mut transaction_description: String = String::new();
     let mut user_options: Transaction;
 
-    loop {
+    'get_all_details: loop {
         
         println!("Enter HOME at any time to go back to the home menu");
         
         
-        loop {
+        'date:loop {
 
             println!("Enter the date of the transaction (yy-mm-dd), hit 'enter' for today's date:");
             transaction_date.clear();
@@ -57,13 +58,13 @@ pub fn get_user_transaction() -> NaiveDate{
             
             if transaction_date == "HOME" {
                 get_user_menu_selection();
-                break;
+                break 'get_all_details;
             }
             match check_user_date_input(&transaction_date) {
                 
                 Ok(date) => {
                     user_options.date = date;
-                    break;
+                    break 'date;
                 }
                 Err(_e) => println!("Failed to parse date: {}",_e),
             }
@@ -71,7 +72,7 @@ pub fn get_user_transaction() -> NaiveDate{
 
         
         
-        loop {
+        'amount:loop {
             println!("Enter the amount of the transaction: ");
         
             let mut amount_str = String::new();
@@ -81,7 +82,7 @@ pub fn get_user_transaction() -> NaiveDate{
 
             if amount_str == "HOME" {
                 get_user_menu_selection();
-                break;
+                break 'get_all_details;
             }
 
             transaction_amount = amount_str.parse();
@@ -89,7 +90,7 @@ pub fn get_user_transaction() -> NaiveDate{
             match transaction_amount {
                 Ok(value) => {
                     user_options.amount = value;
-                    break;
+                    break 'amount;
                 }
                 Err(e) => println!("Failed to parse {}. Try again!",e),
             }
@@ -97,7 +98,7 @@ pub fn get_user_transaction() -> NaiveDate{
         }
         
         
-        loop {
+        'transaction_type:loop {
 
             println!("Enter the type (Income/Expense)");
             io::stdin()
@@ -106,12 +107,12 @@ pub fn get_user_transaction() -> NaiveDate{
 
             if transaction_type == "HOME" {
                 get_user_menu_selection();
-                break;
+                break 'get_all_details;
             }
 
             println!("Enter the category:");
-            println!("Income Categories: Work, Freelance, Gift, Other");
-            println!("Expense Categories: Food,Transportation, Entertainment, Rent, Giving, Other");
+            println!("Income Categories: Work, Freelance, Gift");
+            println!("Expense Categories: Food,Transportt, Entertainment, Rent, Giving");
             
             io::stdin()
             .read_line(&mut transaction_category)
@@ -119,7 +120,7 @@ pub fn get_user_transaction() -> NaiveDate{
             
             if transaction_category == "HOME" {
                 get_user_menu_selection();
-                break;
+                break 'get_all_details;
             } 
         
             match transaction_type.as_str() {
@@ -128,18 +129,46 @@ pub fn get_user_transaction() -> NaiveDate{
                     match transaction_category.as_str() {
                         "Work" => category = IncomeCategory::WORK,
                         "Freelance" => category = IncomeCategory::FREELANCE,
-                        "Gift" => category = IncomeCategory
+                        "Gift" => category = IncomeCategory::GIFT,
+                        _ => category = IncomeCategory::OTHER
 
                     }
-                    TransactionType::Income(, user_options.amount).to_string();
+                    user_options._type = TransactionType::Income(category, user_options.amount);
+                    break 'transaction_type;
                 }
                 "Expense" => {
-                    TransactionType::Expense(transaction_type, ())
+                    let category: ExpenseCategory;
+                    match transaction_category.as_str() {
+                        "Food" => category = ExpenseCategory::Food,
+                        "Transport" => category = ExpenseCategory::Transportation,
+                        "Entertainment" => category = ExpenseCategory::Entertainment,
+                        "Rent" => category = ExpenseCategory::Rent,
+                        "Giving" => category = ExpenseCategory::Giving,
+                        _ => category = ExpenseCategory::Other
+                    }
+                    user_options._type = TransactionType::Expense(category, user_options.amount);
+                    break 'transaction_type;
                 }
-            }
+                _ => println!("Please enter in a correct type")
+
+            };
         }
 
+        println!("Enter a description:");
+        io::stdin()
+            .read_line(&mut transaction_description)
+            .expect("Failed to read the input!");
+            
+            if transaction_description == "HOME" {
+                get_user_menu_selection();
+                break 'get_all_details;
+            }
+
+            user_options.description = transaction_description;
+            break 'get_all_details;
     };
+
+    return user_options
    
 
 }
