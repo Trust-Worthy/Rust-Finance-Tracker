@@ -68,7 +68,7 @@ impl fmt::Display for TransactionType {
 }
 
 #[derive(Debug)]
-struct Transaction {
+pub struct Transaction {
     date: NaiveDate,
     amount: f64,
     _type: TransactionType,
@@ -89,26 +89,26 @@ impl fmt::Display for Transaction {
 }
 
 #[derive(Debug)]
-struct Ledger {
+pub struct Ledger {
 
     transactions: Vec<Transaction>,
 }
 
 impl Ledger {
 
-    fn new() -> Self {
+    pub fn new() -> Self {
         Ledger {
             transactions: Vec::new(),
         }
 
     }
 
-    fn add_transaction(&mut self, transaction: Transaction) {
+    pub fn add_transaction(&mut self, transaction: Transaction) {
 
         self.transactions.push(transaction);
     }
 
-    fn get_total_expenses(&self) -> f64 {
+    pub fn get_total_expenses(&self) -> f64 {
         self.transactions
         .iter()
         .filter(|t| matches!(t._type, TransactionType::Expense(_, _)))
@@ -116,7 +116,7 @@ impl Ledger {
         .sum() // sum the values
     }
 
-    fn get_total_income(&self) -> f64 {
+    pub fn get_total_income(&self) -> f64 {
         self.transactions
         .iter()
         .filter(|t| matches!(t._type, TransactionType::Income(_, _)))
@@ -124,7 +124,7 @@ impl Ledger {
         .sum() // sum the values
     }
 
-    fn show_all_transactions(&self, start_date: Option<NaiveDate>, end_date: Option<NaiveDate>) {
+    pub fn show_all_transactions(&self, start_date: Option<NaiveDate>, end_date: Option<NaiveDate>) {
         
 
         let start_date: NaiveDate = start_date.unwrap_or_else(|| NaiveDate::from_ymd_opt(2000,1,1).expect("Valid default date"));
@@ -160,7 +160,7 @@ impl Ledger {
     } 
 
 
-    fn show_summary(&self,start_date: Option<NaiveDate>,end_date: Option<NaiveDate>) {
+    pub fn show_summary(&self,start_date: Option<NaiveDate>,end_date: Option<NaiveDate>) {
 
         let income: f64;
         let expense: f64;

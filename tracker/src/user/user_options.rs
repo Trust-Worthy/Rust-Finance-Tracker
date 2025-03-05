@@ -1,7 +1,7 @@
 use std::{io, num::ParseIntError, process};
 use chrono::{NaiveDate, format::ParseError};
 
-use crate::ledger;
+use crate::tracker_features::ledger::TransactionType;
 
 pub fn welcome_message() {
 
@@ -9,9 +9,6 @@ pub fn welcome_message() {
     println!("Please choose something from the options below.");
     
 }
-
-
-
 
 pub fn display_menu_options() {
     println!("\nOptions are below");
@@ -35,22 +32,47 @@ pub fn check_user_date_input(user_choice: &String) -> Result<NaiveDate,ParseErro
 
 pub fn get_user_transaction() -> NaiveDate{
 
-    let mut user_choice: String = String::new();
+    let mut transaction_date: String = String::new();
+    let mut transaction_amount: f64;
+    let mut transaction_type: String = String::new();
+    let mut transaction_category: String = String::new();
+
     loop {
+        
 
         println!("Enter the date of the transaction (yy-mm-dd) or hit 'enter' for today's date: ");
+        transaction_date.clear();
         io::stdin()
-        .read_line(&mut user_choice)
+        .read_line(&mut transaction_date)
         .expect("Failed to read the input!");
+        
     
+        match check_user_date_input(&transaction_date) {
+            Ok(date) => return date,
+            Err(_e) => println!("Failed to parse date: {}",_e),
+        }
+        println!("Enter the amount of the transaction ");
+        transaction_date.clear();
+        io::stdin()
+        .read_line(&mut transaction_date)
+        .expect("Failed to read the input!");
+        
     
-        match check_user_date_input(&user_choice) {
+        match check_user_date_input(&transaction_date) {
             Ok(date) => return date,
             Err(_e) => println!("Failed to parse date: {}",_e),
         }
     }
    
 
+}
+
+#[derive(Debug)]
+pub struct UserOptions {
+    date: NaiveDate,
+    amount: f64,
+    _type: TransactionType,
+    description: String,
 }
 
 pub fn get_user_menu_selection() -> u32 {
