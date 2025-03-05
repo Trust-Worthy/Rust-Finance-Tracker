@@ -1,5 +1,5 @@
 use std::{io, num::ParseIntError, process};
-use chrono::{NaiveDate, format::ParseError};
+use chrono::{format::ParseError, Local, NaiveDate};
 
 use crate::tracker_features::ledger::TransactionType;
 
@@ -26,6 +26,10 @@ pub fn check_user_option_input(user_choice: &String) -> Result<u32,ParseIntError
 }
 
 pub fn check_user_date_input(user_choice: &String) -> Result<NaiveDate,ParseError> {
+    if user_choice.trim().is_empty() {
+        return Ok(Local::now().naive_local().date())
+    }
+
     let date = NaiveDate::parse_from_str(user_choice, "%Y-%m-%d");
     return date
 }
@@ -33,36 +37,73 @@ pub fn check_user_date_input(user_choice: &String) -> Result<NaiveDate,ParseErro
 pub fn get_user_transaction() -> NaiveDate{
 
     let mut transaction_date: String = String::new();
-    let mut transaction_amount: f64;
+    let mut transaction_amount: Result<f64,_>;
     let mut transaction_type: String = String::new();
     let mut transaction_category: String = String::new();
+    let mut user_options: UserOptions;
 
     loop {
         
+        println!("Enter HOME at any time to go back to the home menu");
+        
+        
+        loop {
 
-        println!("Enter the date of the transaction (yy-mm-dd) or hit 'enter' for today's date: ");
-        transaction_date.clear();
-        io::stdin()
-        .read_line(&mut transaction_date)
-        .expect("Failed to read the input!");
+            println!("Enter the date of the transaction (yy-mm-dd), hit 'enter' for today's date:");
+            transaction_date.clear();
+            io::stdin()
+            .read_line(&mut transaction_date)
+            .expect("Failed to read the input!");
+            
+            if transaction_date == "HOME" {
+                get_user_menu_selection();
+                break;
+            }
+            match check_user_date_input(&transaction_date) {
+                
+                Ok(date) => {
+                    user_options.date = transaction_date;
+                    break;
+                }
+                Err(_e) => println!("Failed to parse date: {}",_e),
+            }
+        }
+
         
+        
+        loop {
+            println!("Enter the amount of the transaction: ");
+        
+            let mut amount_str = String::new();
+            io::stdin()
+            .read_line(&mut amount_str)
+            .expect("Failed to read the input!");
+
+            transaction_amount = amount_str.parse();
+
+            match transaction_amount {
+                Ok(value) => {
+                    user_options.amount = value;
+                    break;
+                }
+                Err(e) => println!("Failed to parse {}. Try again!",e),
+            }
+
+        }
+        
+        
+        
+        println!("Enter the type (Income/Expense)");
+        io::stdin()
+        .read_line(&mut transaction_type)
+        .expect("Failed to read the input!");
+
     
-        match check_user_date_input(&transaction_date) {
+        match check_user_date_input(&amount_str) {
             Ok(date) => return date,
             Err(_e) => println!("Failed to parse date: {}",_e),
         }
-        println!("Enter the amount of the transaction ");
-        transaction_date.clear();
-        io::stdin()
-        .read_line(&mut transaction_date)
-        .expect("Failed to read the input!");
-        
-    
-        match check_user_date_input(&transaction_date) {
-            Ok(date) => return date,
-            Err(_e) => println!("Failed to parse date: {}",_e),
-        }
-    }
+    };
    
 
 }
