@@ -2,25 +2,12 @@
 //! 
 //! Learning by doing is the best type of learning in my book!
 
-
 mod user;
-mod features;
+use user::user_options::{check_user_input, get_user_selection};
 
-mod tests {
-    use super::*;
-    
-}
+mod tracker_features;
+use tracker_features
 
-
-// pub fn welcome_message() {
-
-//     println!("\nWelcome to the finance tracker. You're going to be finacially smart!");
-//     println!("Please choose something from the options below.");
-// }
-
-pub fn add(left: usize, right:usize) -> usize {
-    left + right
-}
 
 
 
