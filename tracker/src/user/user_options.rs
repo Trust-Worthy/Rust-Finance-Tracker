@@ -33,17 +33,21 @@ pub fn check_user_date_input(user_choice: &String) -> Result<NaiveDate,ParseErro
     return date
 }
 
-pub fn get_user_transaction() {
+pub fn get_user_transaction() -> NaiveDate{
 
-    println!("Enter the date of the transaction (yy-mm-dd) or hit 'enter' for today's date: ");
-    let user_choice: String = String::new();
+    let mut user_choice: String = String::new();
+    loop {
 
-    io::stdin()
-    .read_line(&mut user_choice)
-    .expect("Failed to read the input!");
-
-    match check_user_date_input(&user_choice) {
-        Ok(date) => 
+        println!("Enter the date of the transaction (yy-mm-dd) or hit 'enter' for today's date: ");
+        io::stdin()
+        .read_line(&mut user_choice)
+        .expect("Failed to read the input!");
+    
+    
+        match check_user_date_input(&user_choice) {
+            Ok(date) => return date,
+            Err(_e) => println!("Failed to parse date: {}",_e),
+        }
     }
    
 
