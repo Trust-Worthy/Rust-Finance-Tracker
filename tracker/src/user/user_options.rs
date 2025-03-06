@@ -226,56 +226,66 @@ pub fn get_user_summary_range() -> (NaiveDate,NaiveDate){
             .read_line(&mut summary_start_date)
             .expect("Failed to read the input!");
 
-        start_date = match summary_start_date.trim() {
-            "" => {
-                NaiveDate::from_ymd_opt(2000, 1, 1).unwrap() // Default if empty
+        let trimmed_date  = summary_start_date.trim();
+
+        if trimmed_date.is_empty() {
+            start_date = NaiveDate::from_ymd_opt(2001, 1, 1).unwrap();
+            break 'start_date;
+
+        }
+
+        match NaiveDate::parse_from_str(trimmed_date, "%Y-%m-%d") {
+            Ok(date) => {
+                start_date = date;
+                break 'start_date;
             }
-            _ => match NaiveDate::parse_from_str(summary_start_date.as_str(), "%Y-%m-%d") {
-                Ok(date) => {
-                    date // Use valid parsed date
-                }
-                Err(e) => {
-                    println!("Failed to parse date: {}", e);
-                    NaiveDate::from_ymd_opt(2000, 1, 1).unwrap() // Default on error
-                }
+            Err(e) => {
+                println!("Invalid date format: {}. Please use YYYY-MM-DD.", e);
             }
+        }
+
+        
         };
 
-        // Break the loop once we have a valid date
-        println!("Using start date: {}", start_date);
-        break 'start_date;
-    }
+        'end_date: loop {
+            println!("Enter the end date (yyyy-mm-dd): ");
+            summary_end_date.clear();
+            io::stdin()
+                .read_line(&mut summary_end_date)
+                .expect("Failed to read the input!");
+            
+            let trimmed_end_date = summary_end_date.trim();
+            
+            if trimmed_end_date.is_empty() {
+                end_date = NaiveDate::from_ymd_opt(2050, 1, 1).unwrap();
+                break 'end_date;
+            }
+
+            end_date = match summary_end_date.trim() {
+                "" => {
+                    NaiveDate::from_ymd_opt(2050, 1, 1).unwrap() // Default if empty
+                }
+                _ => match NaiveDate::parse_from_str(summary_end_date.as_str(), "%Y-%m-%d") {
+                    Ok(date) => {
+                        date // Use valid parsed date
+                    }
+                    Err(e) => {
+                        println!("Failed to parse date: {}", e);
+                        NaiveDate::from_ymd_opt(2000, 1, 1).unwrap() // Default on error
+                    }
+                }
+            };
     
-    'end_date: loop {
-        println!("Enter the end date (yyyy-mm-dd): ");
-        summary_end_date.clear();
-        io::stdin()
-            .read_line(&mut summary_end_date)
-            .expect("Failed to read the input!");
-
-        end_date = match summary_end_date.trim() {
-            "" => {
-                NaiveDate::from_ymd_opt(2050, 1, 1).unwrap() // Default if empty
-            }
-            _ => match NaiveDate::parse_from_str(summary_end_date.as_str(), "%Y-%m-%d") {
-                Ok(date) => {
-                    date // Use valid parsed date
-                }
-                Err(e) => {
-                    println!("Failed to parse date: {}", e);
-                    NaiveDate::from_ymd_opt(2000, 1, 1).unwrap() // Default on error
-                }
-            }
-        };
-
-        // Break the loop once we have a valid date
-        println!("Using end date: {}", end_date);
-        break 'end_date;
-    }
-
-    return (start_date,end_date)
-
+            // Break the loop once we have a valid date
+            println!("Using end date: {}", end_date);
+            break 'end_date;
+        }
+    
+        return (start_date,end_date)
+        
 }
+    
+    
 
 
 pub fn exit_program() {
