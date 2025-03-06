@@ -40,9 +40,9 @@ pub fn check_user_date_input(user_choice: &String) -> Result<NaiveDate,ParseErro
 pub fn create_user_transaction() -> Transaction{
 
     let fmt : &str = "%Y-%m-%d";
-    let mut transaction_amount: Result<f64,_>;
-    let mut transaction_type: String = String::new();
-    let mut transaction_category: String = String::new();
+    
+    
+    
     let mut transaction_description: String = String::new();
     let mut user_options: Transaction = Transaction {
         date: None,
@@ -92,6 +92,8 @@ pub fn create_user_transaction() -> Transaction{
         
         'amount:loop {
 
+            let transaction_amount: Result<f64,_>;
+
             println!("Enter the amount of the transaction: ");
         
             let mut amount_str = String::new();
@@ -120,58 +122,70 @@ pub fn create_user_transaction() -> Transaction{
         
         'transaction_type:loop {
 
+            let mut transaction_type: String = String::new();
+            let mut transaction_category: String = String::new();
+
             println!("Enter the type (Income/Expense)");
+
             io::stdin()
             .read_line(&mut transaction_type)
             .expect("Failed to read the input!");
 
-            if transaction_type == "HOME" {
-                get_user_menu_selection();
+            let trimmed_transaction_type = transaction_type.trim();
+
+            if trimmed_transaction_type == "HOME" {
                 break 'get_all_details;
             }
+
 
             println!("Enter the category:");
             println!("Income Categories: Work, Freelance, Gift");
             println!("Expense Categories: Food,Transportt, Entertainment, Rent, Giving");
             
+            
             io::stdin()
             .read_line(&mut transaction_category)
             .expect("Failed to read the input!");
+
+            let trimmed_transaction_category = transaction_category.trim();
             
-            if transaction_category == "HOME" {
-                get_user_menu_selection();
+            if trimmed_transaction_category == "HOME" {
                 break 'get_all_details;
-            } 
-        
-            match transaction_type.as_str() {
+            }
+
+            
+            match trimmed_transaction_type {
+                    
                 "Income" => {
-                    let category: IncomeCategory;
-                    match transaction_category.as_str() {
-                        "Work" => category = IncomeCategory::WORK,
-                        "Freelance" => category = IncomeCategory::FREELANCE,
-                        "Gift" => category = IncomeCategory::GIFT,
-                        _ => category = IncomeCategory::OTHER
+                    let income_category: IncomeCategory;
+                    match trimmed_transaction_category {
+                        "Work" => income_category = IncomeCategory::WORK,
+                        "Freelance" => income_category = IncomeCategory::FREELANCE,
+                        "Gift" => income_category = IncomeCategory::GIFT,
+                        _ => income_category = IncomeCategory::OTHER
 
                     }
-                    user_options._type = Some(TransactionType::Income(Some(category), user_options.amount));
+                    user_options._type = Some(TransactionType::Income(Some(income_category), user_options.amount));
                     break 'transaction_type;
                 }
                 "Expense" => {
-                    let category: ExpenseCategory;
-                    match transaction_category.as_str() {
-                        "Food" => category = ExpenseCategory::Food,
-                        "Transport" => category = ExpenseCategory::Transportation,
-                        "Entertainment" => category = ExpenseCategory::Entertainment,
-                        "Rent" => category = ExpenseCategory::Rent,
-                        "Giving" => category = ExpenseCategory::Giving,
-                        _ => category = ExpenseCategory::Other
+                    let expense_category: ExpenseCategory;
+                    match trimmed_transaction_category{
+                        "Food" => expense_category = ExpenseCategory::Food,
+                        "Transport" => expense_category = ExpenseCategory::Transportation,
+                        "Entertainment" => expense_category = ExpenseCategory::Entertainment,
+                        "Rent" => expense_category = ExpenseCategory::Rent,
+                        "Giving" => expense_category = ExpenseCategory::Giving,
+                        _ => expense_category = ExpenseCategory::Other
                     }
-                    user_options._type = Some(TransactionType::Expense(Some(category), user_options.amount));
+                    user_options._type = Some(TransactionType::Expense(Some(expense_category), user_options.amount));
                     break 'transaction_type;
                 }
                 _ => println!("Please enter in a correct type")
-
-            };
+            } 
+        
+            
+        
         }
 
         println!("Enter a description:");
