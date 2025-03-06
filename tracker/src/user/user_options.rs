@@ -39,7 +39,7 @@ pub fn check_user_date_input(user_choice: &String) -> Result<NaiveDate,ParseErro
 
 pub fn create_user_transaction() -> Transaction{
 
-    let mut transaction_date: String = String::new();
+    let fmt : &str = "%Y-%m-%d";
     let mut transaction_amount: Result<f64,_>;
     let mut transaction_type: String = String::new();
     let mut transaction_category: String = String::new();
@@ -56,9 +56,10 @@ pub fn create_user_transaction() -> Transaction{
         
         
         'date:loop {
+            let mut transaction_date: String = String::new();
 
             println!("Enter the date of the transaction (yyyy-mm-dd), hit 'enter' for today's date:");
-            transaction_date.clear();
+
             io::stdin()
             .read_line(&mut transaction_date)
             .expect("Failed to read the input!");
@@ -67,21 +68,30 @@ pub fn create_user_transaction() -> Transaction{
 
             if trimmed_start_date == "HOME" {
                 break 'get_all_details;
+            } else if trimmed_start_date.is_empty() {
+                user_options.date = NaiveDate::from_ymd_opt(2000, 1, 1);
+                break 'date;
+                 
+            } else {
+
+                match NaiveDate::parse_from_str(trimmed_start_date, fmt){
+                    Ok(date) => {
+                        user_options.date = Some(date);
+                        break 'date;
+                    }
+                    Err(_e) => println!("Failed to parse date: {}",_e),
+                }
+
             }
             
-    
-            match check_user_date_input(&transaction_date) {
-                Ok(date) => {
-                    user_options.date = Some(date);
-                    break 'date;
-                }
-                Err(_e) => println!("Failed to parse date: {}",_e),
-            }
+            
+            
         }
 
         
         
         'amount:loop {
+
             println!("Enter the amount of the transaction: ");
         
             let mut amount_str = String::new();
@@ -89,12 +99,13 @@ pub fn create_user_transaction() -> Transaction{
             .read_line(&mut amount_str)
             .expect("Failed to read the input!");
 
-            if amount_str == "HOME" {
-                get_user_menu_selection();
-                break 'get_all_details;
-            }
+            let trimmed_amount = amount_str.trim();
 
-            transaction_amount = amount_str.parse();
+            if trimmed_amount == "HOME" {
+                break 'get_all_details;
+            } 
+
+            transaction_amount = trimmed_amount.parse();
 
             match transaction_amount {
                 Ok(value) => {
