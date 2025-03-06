@@ -25,7 +25,10 @@ fn main() {
         
     
         match user_selection {
-            3 => exit_program(),    
+            3 => {
+                println!("Exiting Program...");
+                exit_program();
+            }    
             2 => {
                 let (start_date,end_date): (NaiveDate,NaiveDate) = get_user_summary_range();
                 user_ledger.show_all_transactions(Some(start_date), Some(end_date));
