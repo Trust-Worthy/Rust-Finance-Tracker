@@ -205,13 +205,16 @@ pub fn get_user_menu_selection() -> u32 {
 
 }
 
-pub fn get_user_summary_range() -> (String,String){
+pub fn get_user_summary_range() -> (NaiveDate,NaiveDate){
 
 
     let mut summary_start_date: String = String::new();
     let mut summary_end_date: String = String::new();
+    let start_date: NaiveDate;
+    let end_date: NaiveDate;
 
     println!("Hit Enter for next two options to get all transactions");
+
     'start_date:loop {
         println!("Enter the start date (yyyy-mm-dd): ");
 
@@ -221,7 +224,8 @@ pub fn get_user_summary_range() -> (String,String){
         .expect("Failed to read the input!");
         
         match check_user_date_input(&summary_start_date) {
-            Ok(_) => {
+            Ok(date) => {
+                start_date = date;
                 break 'start_date;
             }
             Err(_e) => {
@@ -229,6 +233,7 @@ pub fn get_user_summary_range() -> (String,String){
             }
         }
     }
+    
     'end_date:loop {
 
         println!("Enter the end date (yyyy-mm-dd): ");
@@ -238,7 +243,8 @@ pub fn get_user_summary_range() -> (String,String){
         .expect("Failed to read the input!");
         
         match check_user_date_input(&summary_end_date) {
-            Ok(_) => {
+            Ok(date) => {
+                end_date = date;
                 break 'end_date;
             }
             Err(_e) => {
@@ -247,8 +253,7 @@ pub fn get_user_summary_range() -> (String,String){
         }
     }
 
-    (summary_start_date,summary_end_date)
-    
+    return (start_date,end_date)
 
 }
 
