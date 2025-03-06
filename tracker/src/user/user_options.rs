@@ -202,7 +202,7 @@ pub fn create_user_transaction() -> Transaction{
             break 'get_all_details;
     };
 
-    
+    println!("Entry Added successfully");
     return user_options
    
 

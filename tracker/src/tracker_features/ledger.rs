@@ -214,7 +214,7 @@ impl Ledger {
     
 
         income = self.get_total_income();
-        expense = self.get_total_income();
+        expense = self.get_total_expenses();
         let savings:f64 = income - expense;
 
         self.show_all_transactions(start_date, end_date);

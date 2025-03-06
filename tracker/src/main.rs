@@ -31,7 +31,7 @@ fn run_program(user_ledger: &mut Ledger) {
             1 => {
                 let user_transaction:Transaction = create_user_transaction();
                 user_ledger.add_transaction(user_transaction);
-                println!("Entry Added successfully");
+                
             }
             _ => println!("Invalid Selection. Please try again."),
         }
