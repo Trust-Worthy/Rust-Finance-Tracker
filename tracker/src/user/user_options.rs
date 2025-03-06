@@ -34,7 +34,7 @@ pub fn check_user_date_input(user_choice: &String) -> Result<NaiveDate,ParseErro
     return date
 }
 
-pub fn get_user_transactions() -> Transaction{
+pub fn create_user_transaction() -> Transaction{
 
     let mut transaction_date: String = String::new();
     let mut transaction_amount: Result<f64,_>;
@@ -66,7 +66,6 @@ pub fn get_user_transactions() -> Transaction{
                 break 'get_all_details;
             }
             match check_user_date_input(&transaction_date) {
-                
                 Ok(date) => {
                     user_options.date = Some(date);
                     break 'date;
@@ -203,6 +202,53 @@ pub fn get_user_menu_selection() -> u32 {
 
         }
     }
+
+}
+
+pub fn get_user_summary_range() -> (String,String){
+
+
+    let mut summary_start_date: String = String::new();
+    let mut summary_end_date: String = String::new();
+
+    println!("Hit Enter for next two options to get all transactions");
+    'start_date:loop {
+        println!("Enter the start date (yyyy-mm-dd): ");
+
+        summary_start_date.clear();
+        io::stdin()
+        .read_line(&mut summary_start_date)
+        .expect("Failed to read the input!");
+        
+        match check_user_date_input(&summary_start_date) {
+            Ok(_) => {
+                break 'start_date;
+            }
+            Err(_e) => {
+                println!("Failed to parse date: {}",_e)
+            }
+        }
+    }
+    'end_date:loop {
+
+        println!("Enter the end date (yyyy-mm-dd): ");
+        summary_end_date.clear();
+        io::stdin()
+        .read_line(&mut summary_end_date)
+        .expect("Failed to read the input!");
+        
+        match check_user_date_input(&summary_end_date) {
+            Ok(_) => {
+                break 'end_date;
+            }
+            Err(_e) => {
+                println!("Failed to parse date: {}",_e)
+            }
+        }
+    }
+
+    (summary_start_date,summary_end_date)
+    
 
 }
 
