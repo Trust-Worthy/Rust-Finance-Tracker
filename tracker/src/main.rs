@@ -38,7 +38,6 @@ fn run_program(user_ledger: &mut Ledger) {
     }
 }
 
-
 fn main() {
     welcome_message();
     let mut user_ledger:Ledger = Ledger::new();
