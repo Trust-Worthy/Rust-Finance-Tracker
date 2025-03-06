@@ -33,7 +33,7 @@ pub fn check_user_date_input(user_choice: &String) -> Result<NaiveDate,ParseErro
         return Ok(Local::now().naive_local().date())
     }
 
-    let date = NaiveDate::parse_from_str(user_choice, "%Y-%m-%d");
+    let date = NaiveDate::parse_from_str(user_choice.trim(), "%Y-%m-%d");
     return date
 }
 
@@ -58,7 +58,7 @@ pub fn create_user_transaction() -> Transaction{
         
         'date:loop {
 
-            println!("Enter the date of the transaction (yy-mm-dd), hit 'enter' for today's date:");
+            println!("Enter the date of the transaction (yyyy-mm-dd), hit 'enter' for today's date:");
             transaction_date.clear();
             io::stdin()
             .read_line(&mut transaction_date)
