@@ -51,9 +51,8 @@ pub fn create_user_transaction() -> Transaction{
         description:None
     };  
 
+    println!("Enter HOME at any time to go back to the home menu");
     'get_all_details: loop {
-        
-        println!("Enter HOME at any time to go back to the home menu");
         
         
         'date:loop {
@@ -63,11 +62,14 @@ pub fn create_user_transaction() -> Transaction{
             io::stdin()
             .read_line(&mut transaction_date)
             .expect("Failed to read the input!");
-            
-            if transaction_date == "HOME" {
-                get_user_menu_selection();
+
+            let trimmed_start_date = transaction_date.trim();
+
+            if trimmed_start_date == "HOME" {
                 break 'get_all_details;
             }
+            
+    
             match check_user_date_input(&transaction_date) {
                 Ok(date) => {
                     user_options.date = Some(date);
@@ -249,6 +251,7 @@ pub fn get_user_summary_range() -> (NaiveDate,NaiveDate){
 
         'end_date: loop {
             println!("Enter the end date (yyyy-mm-dd): ");
+
             summary_end_date.clear();
             io::stdin()
                 .read_line(&mut summary_end_date)
@@ -261,24 +264,16 @@ pub fn get_user_summary_range() -> (NaiveDate,NaiveDate){
                 break 'end_date;
             }
 
-            end_date = match summary_end_date.trim() {
-                "" => {
-                    NaiveDate::from_ymd_opt(2050, 1, 1).unwrap() // Default if empty
+            match NaiveDate::parse_from_str(trimmed_end_date, "%Y-%m-%d") {
+                Ok(date ) => {
+                    end_date = date;
+                    break 'end_date;
                 }
-                _ => match NaiveDate::parse_from_str(summary_end_date.as_str(), "%Y-%m-%d") {
-                    Ok(date) => {
-                        date // Use valid parsed date
-                    }
-                    Err(e) => {
-                        println!("Failed to parse date: {}", e);
-                        NaiveDate::from_ymd_opt(2000, 1, 1).unwrap() // Default on error
-                    }
-                }
-            };
+                Err(e) => {
+                    println!("Invalid date format: {}. Please use YYYY-MM-DD.", e);
     
-            // Break the loop once we have a valid date
-            println!("Using end date: {}", end_date);
-            break 'end_date;
+                }
+            }
         }
     
         return (start_date,end_date)
