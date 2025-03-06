@@ -218,42 +218,59 @@ pub fn get_user_summary_range() -> (NaiveDate,NaiveDate){
 
     println!("Hit Enter for next two options to get all transactions");
 
-    'start_date:loop {
+    'start_date: loop {
         println!("Enter the start date (yyyy-mm-dd): ");
 
         summary_start_date.clear();
         io::stdin()
-        .read_line(&mut summary_start_date)
-        .expect("Failed to read the input!");
-        
-        match check_user_date_input(&summary_start_date) {
-            Ok(date) => {
-                start_date = date;
-                break 'start_date;
+            .read_line(&mut summary_start_date)
+            .expect("Failed to read the input!");
+
+        start_date = match summary_start_date.trim() {
+            "" => {
+                NaiveDate::from_ymd_opt(2000, 1, 1).unwrap() // Default if empty
             }
-            Err(_e) => {
-                println!("Failed to parse date: {}",_e)
+            _ => match NaiveDate::parse_from_str(summary_start_date.as_str(), "%Y-%m-%d") {
+                Ok(date) => {
+                    date // Use valid parsed date
+                }
+                Err(e) => {
+                    println!("Failed to parse date: {}", e);
+                    NaiveDate::from_ymd_opt(2000, 1, 1).unwrap() // Default on error
+                }
             }
-        }
+        };
+
+        // Break the loop once we have a valid date
+        println!("Using start date: {}", start_date);
+        break 'start_date;
     }
     
-    'end_date:loop {
-
+    'end_date: loop {
         println!("Enter the end date (yyyy-mm-dd): ");
         summary_end_date.clear();
         io::stdin()
-        .read_line(&mut summary_end_date)
-        .expect("Failed to read the input!");
-        
-        match check_user_date_input(&summary_end_date) {
-            Ok(date) => {
-                end_date = date;
-                break 'end_date;
+            .read_line(&mut summary_end_date)
+            .expect("Failed to read the input!");
+
+        end_date = match summary_end_date.trim() {
+            "" => {
+                NaiveDate::from_ymd_opt(2000, 1, 1).unwrap() // Default if empty
             }
-            Err(_e) => {
-                println!("Failed to parse date: {}",_e)
+            _ => match NaiveDate::parse_from_str(summary_end_date.as_str(), "%Y-%m-%d") {
+                Ok(date) => {
+                    date // Use valid parsed date
+                }
+                Err(e) => {
+                    println!("Failed to parse date: {}", e);
+                    NaiveDate::from_ymd_opt(2000, 1, 1).unwrap() // Default on error
+                }
             }
-        }
+        };
+
+        // Break the loop once we have a valid date
+        println!("Using end date: {}", end_date);
+        break 'end_date;
     }
 
     return (start_date,end_date)
