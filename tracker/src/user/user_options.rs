@@ -255,7 +255,7 @@ pub fn get_user_summary_range() -> (NaiveDate,NaiveDate){
 
         end_date = match summary_end_date.trim() {
             "" => {
-                NaiveDate::from_ymd_opt(2000, 1, 1).unwrap() // Default if empty
+                NaiveDate::from_ymd_opt(2050, 1, 1).unwrap() // Default if empty
             }
             _ => match NaiveDate::parse_from_str(summary_end_date.as_str(), "%Y-%m-%d") {
                 Ok(date) => {

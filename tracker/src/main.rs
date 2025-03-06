@@ -10,13 +10,7 @@ mod tracker_features;
 use tracker_features::ledger::{Ledger, Transaction};
 
 
-
-
-
-fn main() {
-    welcome_message();
-    let mut user_ledger:Ledger = Ledger::new();
-
+fn run_program(user_ledger: &mut Ledger) {
 
     loop {
 
@@ -32,6 +26,7 @@ fn main() {
             2 => {
                 let (start_date,end_date): (NaiveDate,NaiveDate) = get_user_summary_range();
                 user_ledger.show_all_transactions(Some(start_date), Some(end_date));
+                user_ledger.show_summary(Some(start_date), Some(end_date));
             },
             1 => {
                 let user_transaction:Transaction = create_user_transaction();
@@ -41,6 +36,15 @@ fn main() {
             _ => println!("Invalid Selection. Please try again."),
         }
     }
+}
+
+
+fn main() {
+    welcome_message();
+    let mut user_ledger:Ledger = Ledger::new();
+
+    run_program(&mut user_ledger);
+    
 
 
    
